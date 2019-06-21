@@ -69,6 +69,9 @@ operations.multiply.onclick = function () {
         input.pop();
         display.value = input.toString().split(',').join('');
     }
+    else if(input[input.length - 1] == '.') {
+    operations.multiply.disabled = true;
+    }
     operator = '*';
     input.push('*');
     display.value = input.toString().split(',').join('');
@@ -85,6 +88,9 @@ operations.divide.onclick = function () {
         input[input.length - 1] == '-') {
         input.pop();
         display.value = input.toString().split(',').join('');
+    }
+    else if(input[input.length - 1] == '.') {
+    operations.divide.disabled = true;
     }
     operator = '/';
     input.push('/');
@@ -103,6 +109,9 @@ operations.add.onclick = function () {
         input.pop();
         display.value = input.toString().split(',').join('');
     }
+    else if(input[input.length - 1] == '.') {
+    operations.add.disabled = true;
+    }
     operator = '+';
     input.push('+');
     display.value = input.toString().split(',').join('');
@@ -120,6 +129,9 @@ operations.subtract.onclick = function () {
         input.pop();
         display.value = input.toString().split(',').join('');
     }
+    else if(input[input.length - 1] == '.') {
+    operations.subtract.disabled = true;
+    }
     operator = '-';
     input.push('-');
     display.value = input.toString().split(',').join('');
@@ -134,23 +146,17 @@ operations.decimal.onclick = function () {
     lastInput = '.';
     input.push('.');
     display.value = input.toString().split(',').join('');
+    operations.multiply.disabled = true;
+    operations.divide.disabled = true;
+    operations.add.disabled = true;
+    operations.subtract.disabled = true;
     operations.decimal.disabled = true;
 }
 //DELETE
 operations.delete.onclick = function () {
     if (input[input.length - 1] == '.') {
         operations.decimal.disabled = false;
-    } else if (input[input.length - 1] == '*' ||
-        //add chunck check && contains decimal for more specifity
-        input[input.length - 1] == '/' ||
-        input[input.length - 1] == '+' ||
-        input[input.length - 1] == '-') {
-        operations.multiply.disabled = false;
-        operations.divide.disabled = false;
-        operations.add.disabled = false;
-        operations.subtract.disabled = false;
-        operations.decimal.disabled = true;
-    }
+    } 
     input.pop();
     display.value = input.toString().split(',').join('');
     if (input.length == 0) {

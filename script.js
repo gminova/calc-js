@@ -27,11 +27,19 @@ const operations = {
     'equals': document.getElementById('equals')
 }
 
-//MEMORY
+//INPUT
 let display = document.getElementById('display');
-let result = document.getElementById('result');
 let input = [];
 let lastInput = undefined;
+//workers
+let workerLeft = undefined;
+let operator = undefined;
+let workerRight = undefined;
+let master = [];
+//OUTPUT
+let result = document.getElementById('result');
+let product = undefined;
+
 
 //EVENTS FOR DIGITS
 for (let i = 0; i <= 9; i++) {
@@ -39,36 +47,86 @@ for (let i = 0; i <= 9; i++) {
         lastInput = i;
         input.push(i);
         display.value = input.toString().split(',').join('');
+        operations.multiply.disabled = false;
+        operations.divide.disabled = false;
+        operations.add.disabled = false;
+        operations.subtract.disabled = false;
     }
 }
+//EVENTS FOR OPERATORS BY DEFAULT
+operations.multiply.disabled = true;
+operations.divide.disabled = true;
+operations.add.disabled = true;
+operations.subtract.disabled = true;
+
 
 //EVENTS FOR OPERATIONS:
 //MULTIPLY
 operations.multiply.onclick = function () {
-    lastInput = '*';
+    if (input[input.length - 1] == '/' ||
+        input[input.length - 1] == '+' ||
+        input[input.length - 1] == '-') {
+        input.pop();
+        display.value = input.toString().split(',').join('');
+    }
+    operator = '*';
     input.push('*');
     display.value = input.toString().split(',').join('');
+    operations.multiply.disabled = true;
+    operations.divide.disabled = false;
+    operations.add.disabled = false;
+    operations.subtract.disabled = false;
     operations.decimal.disabled = false;
 }
 //DIVIDE
 operations.divide.onclick = function () {
-    lastInput = '/';
+    if (input[input.length - 1] == '*' ||
+        input[input.length - 1] == '+' ||
+        input[input.length - 1] == '-') {
+        input.pop();
+        display.value = input.toString().split(',').join('');
+    }
+    operator = '/';
     input.push('/');
     display.value = input.toString().split(',').join('');
+    operations.multiply.disabled = false;
+    operations.divide.disabled = true;
+    operations.add.disabled = false;
+    operations.subtract.disabled = false;
     operations.decimal.disabled = false;
 }
 //ADD
 operations.add.onclick = function () {
-    lastInput = '+';
+    if (input[input.length - 1] == '*' ||
+        input[input.length - 1] == '/' ||
+        input[input.length - 1] == '-') {
+        input.pop();
+        display.value = input.toString().split(',').join('');
+    }
+    operator = '+';
     input.push('+');
     display.value = input.toString().split(',').join('');
+    operations.multiply.disabled = false;
+    operations.divide.disabled = false;
+    operations.add.disabled = true;
+    operations.subtract.disabled = false;
     operations.decimal.disabled = false;
 }
 //SUBTRACT
 operations.subtract.onclick = function () {
-    lastInput = '-';
+    if (input[input.length - 1] == '*' ||
+        input[input.length - 1] == '/' ||
+        input[input.length - 1] == '+') {
+        input.pop();
+        display.value = input.toString().split(',').join('');
+    }
+    operator = '-';
     input.push('-');
     display.value = input.toString().split(',').join('');
+    operations.multiply.disabled = false;
+    operations.divide.disabled = false;
+    operations.add.disabled = false;
+    operations.subtract.disabled = true;
     operations.decimal.disabled = false;
 }
 //DECIMAL
@@ -83,10 +141,14 @@ operations.delete.onclick = function () {
     if (input[input.length - 1] == '.') {
         operations.decimal.disabled = false;
     } else if (input[input.length - 1] == '*' ||
-    //add chunck check && contains decimal for more specifity
+        //add chunck check && contains decimal for more specifity
         input[input.length - 1] == '/' ||
         input[input.length - 1] == '+' ||
         input[input.length - 1] == '-') {
+        operations.multiply.disabled = false;
+        operations.divide.disabled = false;
+        operations.add.disabled = false;
+        operations.subtract.disabled = false;
         operations.decimal.disabled = true;
     }
     input.pop();
@@ -100,7 +162,12 @@ operations.delete.onclick = function () {
 //CLEAR FUNCTION
 function clear() {
     operations.decimal.disabled = false;
+    operations.multiply.disabled = true;
+    operations.divide.disabled = true;
+    operations.add.disabled = true;
+    operations.subtract.disabled = true;
     input.length = 0;
+    lastInput = undefined;
     display.value = 0;
 }
 operations.clear.addEventListener('click', clear)

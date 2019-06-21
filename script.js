@@ -43,7 +43,6 @@ for (let i = 0; i <= 9; i++) {
 }
 
 //EVENTS FOR OPERATIONS:
-
 //MULTIPLY
 operations.multiply.onclick = function () {
     lastInput = '*';
@@ -81,9 +80,14 @@ operations.decimal.onclick = function () {
 }
 //DELETE
 operations.delete.onclick = function () {
-    //needs check to prevent bug 5.6.6 backwards logic
     if (input[input.length - 1] == '.') {
         operations.decimal.disabled = false;
+    } else if (input[input.length - 1] == '*' ||
+    //add chunck check && contains decimal for more specifity
+        input[input.length - 1] == '/' ||
+        input[input.length - 1] == '+' ||
+        input[input.length - 1] == '-') {
+        operations.decimal.disabled = true;
     }
     input.pop();
     display.value = input.toString().split(',').join('');

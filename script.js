@@ -196,8 +196,7 @@ operations.delete.onclick = function () {
     }
     display.value = input.toString().split(',').join('');
     if (input.length == 0) {
-        input.length = 0;
-        display.value = 0;
+        clear();
     }
     chunk = '';
     result.value = chunk;

@@ -12,7 +12,6 @@ const digits = [
     document.getElementById('nine')
 ]
 
-
 //OPERATIONS - BUTTONS
 const operations = {
     //MATHEMATICAL OPERATIONS
@@ -30,15 +29,12 @@ const operations = {
 //INPUT
 let display = document.getElementById('display');
 let input = [];
-let lastInput = undefined;
+let lastInput = '';
 //workers
-let workerLeft = undefined;
-let operator = undefined;
-let workerRight = undefined;
-let master = [];
+let chunk = '';
+let operator = '';
 //OUTPUT
 let result = document.getElementById('result');
-let product = undefined;
 
 
 //EVENTS FOR DIGITS
@@ -47,54 +43,65 @@ for (let i = 0; i <= 9; i++) {
         lastInput = i;
         input.push(i);
         display.value = input.toString().split(',').join('');
-        operations.multiply.disabled = false;
-        operations.divide.disabled = false;
-        operations.add.disabled = false;
-        operations.subtract.disabled = false;
+        chunk += lastInput.toString();
+        result.value = chunk;
+        unlockMathOperators();
     }
 }
 //EVENTS FOR OPERATORS BY DEFAULT
-operations.multiply.disabled = true;
-operations.divide.disabled = true;
-operations.add.disabled = true;
-operations.subtract.disabled = true;
+function lockMathOperators() {
+    operations.multiply.disabled = true;
+    operations.divide.disabled = true;
+    operations.add.disabled = true;
+    operations.subtract.disabled = true;
+}
 
+function unlockMathOperators() {
+    operations.multiply.disabled = false;
+    operations.divide.disabled = false;
+    operations.add.disabled = false;
+    operations.subtract.disabled = false;
+}
+
+window.onload = function () {
+    display.value = '0';
+    lockMathOperators();
+}
 
 //EVENTS FOR OPERATIONS:
 //MULTIPLY
 operations.multiply.onclick = function () {
+    operator = '*';
     if (input[input.length - 1] == '/' ||
         input[input.length - 1] == '+' ||
         input[input.length - 1] == '-') {
         input.pop();
-        display.value = input.toString().split(',').join('');
     }
-    else if(input[input.length - 1] == '.') {
-    operations.multiply.disabled = true;
-    }
-    operator = '*';
-    input.push('*');
+    input.push(operator);
     display.value = input.toString().split(',').join('');
+
+    chunk = '';
+
     operations.multiply.disabled = true;
     operations.divide.disabled = false;
     operations.add.disabled = false;
     operations.subtract.disabled = false;
     operations.decimal.disabled = false;
 }
+
 //DIVIDE
 operations.divide.onclick = function () {
+    operator = '/';
     if (input[input.length - 1] == '*' ||
         input[input.length - 1] == '+' ||
         input[input.length - 1] == '-') {
         input.pop();
-        display.value = input.toString().split(',').join('');
     }
-    else if(input[input.length - 1] == '.') {
-    operations.divide.disabled = true;
-    }
-    operator = '/';
-    input.push('/');
+    input.push(operator);
     display.value = input.toString().split(',').join('');
+
+    chunk = '';
+
     operations.multiply.disabled = false;
     operations.divide.disabled = true;
     operations.add.disabled = false;
@@ -103,18 +110,17 @@ operations.divide.onclick = function () {
 }
 //ADD
 operations.add.onclick = function () {
+    operator = '+';
     if (input[input.length - 1] == '*' ||
         input[input.length - 1] == '/' ||
         input[input.length - 1] == '-') {
         input.pop();
-        display.value = input.toString().split(',').join('');
     }
-    else if(input[input.length - 1] == '.') {
-    operations.add.disabled = true;
-    }
-    operator = '+';
-    input.push('+');
+    input.push(operator);
     display.value = input.toString().split(',').join('');
+
+    chunk = '';
+
     operations.multiply.disabled = false;
     operations.divide.disabled = false;
     operations.add.disabled = true;
@@ -123,18 +129,17 @@ operations.add.onclick = function () {
 }
 //SUBTRACT
 operations.subtract.onclick = function () {
+    operator = '-';
     if (input[input.length - 1] == '*' ||
         input[input.length - 1] == '/' ||
         input[input.length - 1] == '+') {
         input.pop();
-        display.value = input.toString().split(',').join('');
     }
-    else if(input[input.length - 1] == '.') {
-    operations.subtract.disabled = true;
-    }
-    operator = '-';
-    input.push('-');
+    input.push(operator);
     display.value = input.toString().split(',').join('');
+
+    chunk = '';
+
     operations.multiply.disabled = false;
     operations.divide.disabled = false;
     operations.add.disabled = false;
@@ -143,37 +148,73 @@ operations.subtract.onclick = function () {
 }
 //DECIMAL
 operations.decimal.onclick = function () {
-    lastInput = '.';
-    input.push('.');
-    display.value = input.toString().split(',').join('');
-    operations.multiply.disabled = true;
-    operations.divide.disabled = true;
-    operations.add.disabled = true;
-    operations.subtract.disabled = true;
     operations.decimal.disabled = true;
+    if (input.length == 0 ||
+        input[input.length - 1] == '*' ||
+        input[input.length - 1] == '/' ||
+        input[input.length - 1] == '+' ||
+        input[input.length - 1] == '-') {
+        lastInput = '0.';
+    } else {
+        lastInput = '.';
+    }
+    input.push(lastInput);
+    display.value = input.toString().split(',').join('');
+    chunk += lastInput.toString();
+    result.value = chunk;
+    lockMathOperators();
 }
+
+//EQUALS
+function equals() {
+    result.value = eval(display.value);
+}
+
+operations.equals.addEventListener('click', equals);
+
 //DELETE
 operations.delete.onclick = function () {
-    if (input[input.length - 1] == '.') {
+    if (input[input.length - 1] == '0.' ||
+        input[input.length - 1] == '.') {
         operations.decimal.disabled = false;
-    } 
-    input.pop();
+    }
+    for (let i = input.length; i >= 0; i--) {
+        if (input[input.length - 1] != '*' &&
+            input[input.length - 1] != '/' &&
+            input[input.length - 1] != '+' &&
+            input[input.length - 1] != '-') {
+            input.pop();
+        }
+    }
+    if (input[input.length - 1] == '*' ||
+        input[input.length - 1] == '/' ||
+        input[input.length - 1] == '+' ||
+        input[input.length - 1] == '-') {
+        input.pop();
+        operator = '';
+        unlockMathOperators();
+    }
     display.value = input.toString().split(',').join('');
     if (input.length == 0) {
         input.length = 0;
         display.value = 0;
     }
+    chunk = '';
+    result.value = chunk;
 }
 
 //CLEAR FUNCTION
 function clear() {
     operations.decimal.disabled = false;
-    operations.multiply.disabled = true;
-    operations.divide.disabled = true;
-    operations.add.disabled = true;
-    operations.subtract.disabled = true;
+    lockMathOperators();
     input.length = 0;
-    lastInput = undefined;
     display.value = 0;
+    lastInput = '';
+    //workers
+    chunk = '';
+    operator = '';
+    //OUTPUT
+    result.value = '';
+    product = '';
 }
-operations.clear.addEventListener('click', clear)
+operations.clear.addEventListener('click', clear);

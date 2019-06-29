@@ -40,6 +40,10 @@ let result = document.getElementById('result');
 //EVENTS FOR DIGITS
 for (let i = 0; i <= 9; i++) {
     digits[i].onclick = function () {
+        if (result.value == '' && i == 0) {
+            digits[0].disabled = true;
+            lockDigitsOneToNine();
+        }
         lastInput = i;
         input.push(i);
         display.value = input.toString().split(',').join('');
@@ -63,6 +67,40 @@ function unlockMathOperators() {
     operations.subtract.disabled = false;
 }
 
+function lockDigitsOneToNine() {
+    digits[1].disabled = true;
+    digits[2].disabled = true;
+    digits[3].disabled = true;
+    digits[4].disabled = true;
+    digits[5].disabled = true;
+    digits[6].disabled = true;
+    digits[7].disabled = true;
+    digits[8].disabled = true;
+    digits[9].disabled = true;
+}
+
+function unlockDigitsOneToNine() {
+    digits[1].disabled = false;
+    digits[2].disabled = false;
+    digits[3].disabled = false;
+    digits[4].disabled = false;
+    digits[5].disabled = false;
+    digits[6].disabled = false;
+    digits[7].disabled = false;
+    digits[8].disabled = false;
+    digits[9].disabled = false;
+}
+
+function lockALLDigits() {
+    digits[0].disabled = true;
+    lockDigitsOneToNine();
+}
+
+function unlockAllDigits() {
+    digits[0].disabled = false;
+    unlockDigitsOneToNine();
+}
+
 window.onload = function () {
     display.value = '0';
     lockMathOperators();
@@ -71,6 +109,7 @@ window.onload = function () {
 //EVENTS FOR OPERATIONS:
 //MULTIPLY
 operations.multiply.onclick = function () {
+    unlockAllDigits();
     operator = '*';
     if (input[input.length - 1] == '/' ||
         input[input.length - 1] == '+' ||
@@ -79,7 +118,7 @@ operations.multiply.onclick = function () {
     }
     input.push(operator);
     display.value = input.toString().split(',').join('');
-
+    result.value = '';
     chunk = '';
 
     operations.multiply.disabled = true;
@@ -91,6 +130,7 @@ operations.multiply.onclick = function () {
 
 //DIVIDE
 operations.divide.onclick = function () {
+    unlockAllDigits();
     operator = '/';
     if (input[input.length - 1] == '*' ||
         input[input.length - 1] == '+' ||
@@ -99,7 +139,7 @@ operations.divide.onclick = function () {
     }
     input.push(operator);
     display.value = input.toString().split(',').join('');
-
+    result.value = '';
     chunk = '';
 
     operations.multiply.disabled = false;
@@ -110,6 +150,7 @@ operations.divide.onclick = function () {
 }
 //ADD
 operations.add.onclick = function () {
+    unlockAllDigits();
     operator = '+';
     if (input[input.length - 1] == '*' ||
         input[input.length - 1] == '/' ||
@@ -118,7 +159,7 @@ operations.add.onclick = function () {
     }
     input.push(operator);
     display.value = input.toString().split(',').join('');
-
+    result.value = '';
     chunk = '';
 
     operations.multiply.disabled = false;
@@ -129,6 +170,7 @@ operations.add.onclick = function () {
 }
 //SUBTRACT
 operations.subtract.onclick = function () {
+    unlockAllDigits();
     operator = '-';
     if (input[input.length - 1] == '*' ||
         input[input.length - 1] == '/' ||
@@ -137,7 +179,7 @@ operations.subtract.onclick = function () {
     }
     input.push(operator);
     display.value = input.toString().split(',').join('');
-
+    result.value = '';
     chunk = '';
 
     operations.multiply.disabled = false;
@@ -149,6 +191,7 @@ operations.subtract.onclick = function () {
 //DECIMAL
 operations.decimal.onclick = function () {
     operations.decimal.disabled = true;
+    unlockAllDigits();
     if (input.length == 0 ||
         input[input.length - 1] == '*' ||
         input[input.length - 1] == '/' ||
@@ -168,12 +211,15 @@ operations.decimal.onclick = function () {
 //EQUALS
 function equals() {
     result.value = eval(display.value);
+    chunk = '';
+    lockALLDigits();
 }
 
 operations.equals.addEventListener('click', equals);
 
 //DELETE
 operations.delete.onclick = function () {
+    unlockAllDigits();
     if (input[input.length - 1] == '0.' ||
         input[input.length - 1] == '.') {
         operations.decimal.disabled = false;
@@ -205,6 +251,7 @@ operations.delete.onclick = function () {
 //CLEAR FUNCTION
 function clear() {
     operations.decimal.disabled = false;
+    unlockAllDigits();
     lockMathOperators();
     input.length = 0;
     display.value = 0;

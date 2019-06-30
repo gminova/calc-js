@@ -213,7 +213,7 @@ function equals() {
     result.value = eval(display.value);
     chunk = '';
     lockALLDigits();
-    operations.decimal.disabled = true;
+    //operations.decimal.disabled = true;
 }
 
 operations.equals.addEventListener('click', equals);
@@ -240,6 +240,8 @@ operations.delete.onclick = function () {
         input.pop();
         operator = '';
         unlockMathOperators();
+        lockALLDigits();
+        operations.decimal.disabled = true;
     }
     display.value = input.toString().split(',').join('');
     if (input.length == 0) {

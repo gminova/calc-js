@@ -213,7 +213,7 @@ function equals() {
     result.value = eval(display.value);
     chunk = '';
     lockALLDigits();
-    //operations.decimal.disabled = true;
+    operations.decimal.disabled = true;
 }
 
 operations.equals.addEventListener('click', equals);
